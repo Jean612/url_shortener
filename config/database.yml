@@ -6,10 +6,14 @@ default: &default
 development:
   <<: *default
   database: url_shortener_development
+  username: url_shortener
+  password:
 
 test:
   <<: *default
   database: url_shortener_test
+  username: url_shortener
+  password:
 
 production:
   <<: *default
