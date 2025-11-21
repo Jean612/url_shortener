@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Types
+  # GraphQL type representing a Click.
   class ClickType < Types::BaseObject
     field :id, ID, null: false
     field :link_id, Integer, null: false

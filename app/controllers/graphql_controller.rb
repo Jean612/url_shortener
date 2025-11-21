@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 
+# Controller responsible for handling GraphQL queries and mutations.
 class GraphqlController < ApplicationController
   # If accessing from outside this domain, nullify the session
   # This allows for outside API access while preventing CSRF attacks,
   # but you'll have to authenticate your user separately
   # protect_from_forgery with: :null_session
 
+  # Executes a GraphQL query.
+  #
+  # @route POST /graphql
+  # @param variables [String, Hash, ActionController::Parameters, nil] GraphQL variables
+  # @param query [String] The GraphQL query string
+  # @param operationName [String, nil] The name of the operation to execute
+  # @return [JSON] The result of the GraphQL execution or error details
   def execute
     variables = prepare_variables(params[:variables])
     query = params[:query]
@@ -23,7 +31,11 @@ class GraphqlController < ApplicationController
 
   private
 
-  # Handle variables in form data, JSON body, or a blank value
+  # Prepares GraphQL variables from various input formats.
+  #
+  # @param variables_param [String, Hash, ActionController::Parameters, nil] The raw variables parameter
+  # @return [Hash] The parsed variables hash
+  # @raise [ArgumentError] if the parameter type is unexpected
   def prepare_variables(variables_param)
     case variables_param
     when String
@@ -43,6 +55,10 @@ class GraphqlController < ApplicationController
     end
   end
 
+  # Handles errors during development by logging and returning a JSON error response.
+  #
+  # @param e [StandardError] The exception that occurred
+  # @return [void] Renders a JSON response with error details
   def handle_error_in_development(e)
     logger.error e.message
     logger.error e.backtrace.join("\n")

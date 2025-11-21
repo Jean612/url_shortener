@@ -1,11 +1,16 @@
 # frozen_string_literal: true
 
 module Types
+  # The root type for all GraphQL queries.
   class QueryType < Types::BaseObject
     field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
       argument :id, ID, required: true, description: "ID of the object."
     end
 
+    # Fetches an object by its global ID.
+    #
+    # @param id [ID] The global ID of the object
+    # @return [Object, nil] The object found, or nil
     def node(id:)
       context.schema.object_from_id(id, context)
     end
@@ -14,6 +19,10 @@ module Types
       argument :ids, [ID], required: true, description: "IDs of the objects."
     end
 
+    # Fetches a list of objects by their global IDs.
+    #
+    # @param ids [Array<ID>] The list of global IDs
+    # @return [Array<Object, nil>] The list of objects found
     def nodes(ids:)
       ids.map { |id| context.schema.object_from_id(id, context) }
     end
@@ -25,6 +34,10 @@ module Types
       argument :slug, String, required: true
     end
 
+    # Fetches a link by its slug.
+    #
+    # @param slug [String] The slug of the link
+    # @return [Link, nil] The link found, or nil
     def link(slug:)
       Link.find_by(slug: slug)
     end
@@ -33,6 +46,10 @@ module Types
       argument :limit, Integer, required: false, default_value: 10
     end
 
+    # Fetches the top links by click count.
+    #
+    # @param limit [Integer] The maximum number of links to return (default: 10)
+    # @return [ActiveRecord::Relation<Link>] The list of top links
     def top_links(limit:)
       Link.order(clicks_count: :desc).limit(limit)
     end

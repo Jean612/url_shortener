@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Types
+  # GraphQL type representing a Link.
   class LinkType < Types::BaseObject
     field :id, ID, null: false
     field :original_url, String, null: false
