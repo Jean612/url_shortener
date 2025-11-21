@@ -2,11 +2,13 @@ databases:
   - name: url_shortener
     databaseName: url_shortener
     user: url_shortener
+    plan: free
 
 services:
   - type: web
     name: url_shortener
     env: ruby
+    plan: free
     buildCommand: "./bin/render-build.sh"
     startCommand: "bundle exec puma -C config/puma.rb"
     envVars:
