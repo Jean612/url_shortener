@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Types
+  # Base module for all GraphQL interfaces.
   module BaseInterface
     include GraphQL::Schema::Interface
     edge_type_class(Types::BaseEdge)
