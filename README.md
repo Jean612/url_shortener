@@ -13,7 +13,7 @@ A simple URL shortener built with Ruby on Rails and GraphQL. This application al
 
 *   Ruby (version specified in `.ruby-version`)
 *   Bundler
-*   A database (SQLite3 by default for development)
+*   PostgreSQL
 
 ## Setup
 
