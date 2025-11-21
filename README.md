@@ -30,13 +30,21 @@ A simple URL shortener built with Ruby on Rails and GraphQL. This application al
     bundle install
     ```
 
-3.  **Setup the database:**
+3.  **Configure the database:**
+
+    Ensure your PostgreSQL service is running.
+
+    The application uses `config/database.yml` for database configuration. By default, it looks for a user named `url_shortener` with no password in development. You can update `config/database.yml` or use environment variables to match your local setup.
+
+4.  **Setup the database:**
+
+    Create the database and run migrations:
 
     ```bash
     rails db:setup
     ```
 
-4.  **Start the server:**
+5.  **Start the server:**
 
     ```bash
     rails server
