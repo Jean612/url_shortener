@@ -22,7 +22,7 @@ class Link < ApplicationRecord
   # @return [String] the full shortened URL (e.g., http://localhost:3001/s/abc123)
   def short_url
     options = Rails.application.config.action_controller.default_url_options || {}
-    host = options[:host] || 'localhost:3000'
+    host = ENV["RENDER_EXTERNAL_HOSTNAME"] || options[:host] || 'localhost:3000'
     Rails.application.routes.url_helpers.short_link_url(slug, host: host)
   end
 
