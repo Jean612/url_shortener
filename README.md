@@ -1,24 +1,112 @@
-# README
+# URL Shortener API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A simple URL shortener built with Ruby on Rails and GraphQL. This application allows users to create short links and tracks clicks, including basic analytics like IP address and country.
 
-Things you may want to cover:
+## Features
 
-* Ruby version
+*   **Shorten URLs**: Convert long URLs into short, easy-to-share links.
+*   **GraphQL API**: Full support for creating and querying links via GraphQL.
+*   **Click Tracking**: Tracks every click on a shortened link.
+*   **Analytics**: Records IP address and attempts to determine the country of origin for each click.
 
-* System dependencies
+## Prerequisites
 
-* Configuration
+*   Ruby (version specified in `.ruby-version`)
+*   Bundler
+*   A database (SQLite3 by default for development)
 
-* Database creation
+## Setup
 
-* Database initialization
+1.  **Clone the repository:**
 
-* How to run the test suite
+    ```bash
+    git clone https://github.com/yourusername/url-shortener.git
+    cd url-shortener
+    ```
 
-* Services (job queues, cache servers, search engines, etc.)
+2.  **Install dependencies:**
 
-* Deployment instructions
+    ```bash
+    bundle install
+    ```
 
-* ...
+3.  **Setup the database:**
+
+    ```bash
+    rails db:setup
+    ```
+
+4.  **Start the server:**
+
+    ```bash
+    rails server
+    ```
+
+    The application will be available at `http://localhost:3000` (or 3001 depending on configuration).
+
+## Usage
+
+### GraphQL API
+
+The API is available at `/graphql`. You can interact with it using a tool like GraphiQL or Postman.
+
+#### Create a Short Link
+
+**Mutation:**
+
+```graphql
+mutation {
+  createLink(input: { originalUrl: "https://www.example.com" }) {
+    link {
+      originalUrl
+      shortUrl
+      slug
+    }
+    errors
+  }
+}
+```
+
+#### Query Link Details
+
+**Query:**
+
+```graphql
+query {
+  link(slug: "abc123") {
+    originalUrl
+    clicksCount
+    clicks {
+      ipAddress
+      country
+      createdAt
+    }
+  }
+}
+```
+
+### Redirection
+
+To visit a shortened link, simply navigate to:
+
+`http://localhost:3001/s/<slug>`
+
+For example: `http://localhost:3001/s/abc123`
+
+## Testing
+
+Run the test suite with:
+
+```bash
+bundle exec rspec
+```
+
+## Project Structure
+
+*   `app/models`: ActiveRecord models (`Link`, `Click`).
+*   `app/controllers`: API controllers (`ShortLinksController`, `GraphqlController`).
+*   `app/graphql`: GraphQL schema, types, mutations, and resolvers.
+
+## License
+
+This project is open source and available under the [MIT License](https://opensource.org/licenses/MIT).
