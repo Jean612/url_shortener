@@ -1,66 +1,65 @@
-# URL Shortener API
+# 🚀 High-Performance GraphQL URL Shortener
 
-A simple URL shortener built with Ruby on Rails and GraphQL. This application allows users to create short links and tracks clicks, including basic analytics like IP address and country.
+Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 7** y **GraphQL**.
 
-## Features
+**Demo en vivo:** [https://url-shortener-u7yc.onrender.com/graphql](https://url-shortener-u7yc.onrender.com/graphql)
 
-*   **Shorten URLs**: Convert long URLs into short, easy-to-share links.
-*   **GraphQL API**: Full support for creating and querying links via GraphQL.
-*   **Click Tracking**: Tracks every click on a shortened link.
-*   **Analytics**: Records IP address and attempts to determine the country of origin for each click.
+## ⚡ Características Técnicas
+- **API-First Design:** Construido enteramente sobre GraphQL.
+- **Algoritmo Base62:** Codificación eficiente para generar slugs cortos y únicos.
+- **PostgreSQL:** Almacenamiento relacional optimizado.
+- **Error Handling:** Gestión robusta de errores (URLs inválidas, no encontradas).
 
-## Prerequisites
+## 📋 Requisitos Previos
 
-*   Ruby (version specified in `.ruby-version`)
+*   Ruby (versión especificada en `.ruby-version`)
 *   Bundler
 *   PostgreSQL
 
-## Setup
+## 🛠️ Configuración
 
-1.  **Clone the repository:**
+1.  **Clonar el repositorio:**
 
     ```bash
     git clone https://github.com/yourusername/url-shortener.git
     cd url-shortener
     ```
 
-2.  **Install dependencies:**
+2.  **Instalar dependencias:**
 
     ```bash
     bundle install
     ```
 
-3.  **Configure the database:**
+3.  **Configurar la base de datos:**
 
-    Ensure your PostgreSQL service is running.
+    Asegúrate de que el servicio de PostgreSQL esté en ejecución.
 
-    The application uses `config/database.yml` for database configuration. By default, it looks for a user named `url_shortener` with no password in development. You can update `config/database.yml` or use environment variables to match your local setup.
+    La aplicación utiliza `config/database.yml` para la configuración de la base de datos. Por defecto, busca un usuario llamado `url_shortener` sin contraseña en desarrollo. Puedes actualizar `config/database.yml` o usar variables de entorno para adaptarlo a tu configuración local.
 
-4.  **Setup the database:**
+4.  **Preparar la base de datos:**
 
-    Create the database and run migrations:
+    Crear la base de datos y ejecutar migraciones:
 
     ```bash
     rails db:setup
     ```
 
-5.  **Start the server:**
+5.  **Iniciar el servidor:**
 
     ```bash
     rails server
     ```
 
-    The application will be available at `http://localhost:3000` (or 3001 depending on configuration).
+    La aplicación estará disponible en `http://localhost:3000` (o 3001 dependiendo de la configuración).
 
-## Usage
+## 🔌 Uso de la API
 
-### GraphQL API
+La API es accesible en `/graphql` (o en el link del demo). Puedes interactuar con ella utilizando herramientas como GraphiQL, Postman o cURL.
 
-The API is available at `/graphql`. You can interact with it using a tool like GraphiQL or Postman.
+### 1. Crear un Link Corto (Mutation)
 
-#### Create a Short Link
-
-**Mutation:**
+Para acortar una URL, utiliza la mutación `createLink`.
 
 ```graphql
 mutation {
@@ -75,14 +74,15 @@ mutation {
 }
 ```
 
-#### Query Link Details
+### 2. Consultar un Link por Slug (Query)
 
-**Query:**
+Para obtener los detalles de un link específico, incluyendo su URL original y estadísticas de clics, usa la query `link` proporcionando el `slug`.
 
 ```graphql
 query {
   link(slug: "abc123") {
     originalUrl
+    shortUrl
     clicksCount
     clicks {
       ipAddress
@@ -93,28 +93,44 @@ query {
 }
 ```
 
-### Redirection
+### 3. Consultar Top Links (Query)
 
-To visit a shortened link, simply navigate to:
+Para obtener los links más visitados, utiliza la query `topLinks`. Puedes limitar la cantidad de resultados.
 
-`http://localhost:3001/s/<slug>`
+```graphql
+query {
+  topLinks(limit: 5) {
+    slug
+    originalUrl
+    clicksCount
+  }
+}
+```
 
-For example: `http://localhost:3001/s/abc123`
+### Redirección
 
-## Testing
+Para visitar un link acortado, simplemente navega a:
 
-Run the test suite with:
+`https://url-shortener-u7yc.onrender.com/s/<slug>` (en producción)
+o
+`http://localhost:3001/s/<slug>` (en local)
+
+Ejemplo: `/s/abc123`
+
+## 🧪 Testing
+
+Ejecuta la suite de pruebas con:
 
 ```bash
 bundle exec rspec
 ```
 
-## Project Structure
+## 📂 Estructura del Proyecto
 
-*   `app/models`: ActiveRecord models (`Link`, `Click`).
-*   `app/controllers`: API controllers (`ShortLinksController`, `GraphqlController`).
-*   `app/graphql`: GraphQL schema, types, mutations, and resolvers.
+*   `app/models`: Modelos ActiveRecord (`Link`, `Click`).
+*   `app/controllers`: Controladores de la API (`ShortLinksController`, `GraphqlController`).
+*   `app/graphql`: Esquema GraphQL, tipos, mutaciones y resolvers.
 
-## License
+## 📄 Licencia
 
-This project is open source and available under the [MIT License](https://opensource.org/licenses/MIT).
+Este proyecto es open source y está disponible bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
