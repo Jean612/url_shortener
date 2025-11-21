@@ -1,0 +1,21 @@
+<div class="container">
+  <h1>URL Shortener</h1>
+
+  <% if flash[:alert] %>
+    <div class="error">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
+  <%= form_with model: @link, url: shorten_path, local: true do |form| %>
+    <%= form.text_field :original_url, placeholder: "Enter long URL here...", required: true %>
+    <%= form.submit "Shorten URL" %>
+  <% end %>
+
+  <% if @link.persisted? %>
+    <div class="result">
+      <p>Short link created!</p>
+      <a href="<%= @link.short_url %>" target="_blank"><%= @link.short_url %></a>
+    </div>
+  <% end %>
+</div>
