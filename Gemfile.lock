@@ -101,7 +101,6 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
-    fiber-storage (1.0.1)
     geocoder (1.8.6)
       base64 (>= 0.1.0)
       csv (>= 3.0.0)
@@ -109,9 +108,8 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.5.14)
+    graphql (2.5.15)
       base64
-      fiber-storage
       logger
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
