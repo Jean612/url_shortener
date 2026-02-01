@@ -6,12 +6,12 @@ on:
     branches: [ main ]
 
 jobs:
+  # 1. Seguridad (Brakeman)
   scan_ruby:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -19,14 +19,15 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Scan for common Rails security vulnerabilities using static analysis
+      - name: Scan for security vulnerabilities
         run: bin/brakeman --no-pager
 
+  # 2. Estilo (RuboCop)
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -34,41 +35,73 @@ jobs:
           ruby-version: .ruby-version
           bundler-cache: true
 
-      - name: Lint code for consistent style
-        run: bin/rubocop -f github
+      - name: Lint code
+        run: bin/rubocop --parallel
 
+  # 3. Tests (RSpec) - El más importante
   test:
     runs-on: ubuntu-latest
+    
+    # ¡Aquí levantamos los servicios necesarios para testear!
+    services:
+      postgres:
+        image: postgres:15-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_DB: url_shortener_test
+          POSTGRES_USER: url_shortener
+          POSTGRES_PASSWORD: password
+        # Health check para esperar a que la BD arranque antes de testear
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-    # services:
-    #  redis:
-    #    image: redis
-    #    ports:
-    #      - 6379:6379
-    #    options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
+      redis:
+        image: redis:alpine
+        ports:
+          - "6379:6379"
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - name: Install packages
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips libpq-dev
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y google-chrome-stable curl libjemalloc2 libvips libpq-dev libyaml-dev
 
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      - name: Prepare Database
+        env:
+          RAILS_ENV: test
+          # Conectamos Rails al servicio de Postgres que definimos arriba
+          DATABASE_URL: postgres://url_shortener:password@localhost:5432/url_shortener_test
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }} # Necesario si usas credenciales encriptadas
+        run: bin/rails db:test:prepare
 
       - name: Run tests
         env:
           RAILS_ENV: test
-          # REDIS_URL: redis://localhost:6379/0
-        run: bin/rails db:test:prepare test test:system
+          DATABASE_URL: postgres://url_shortener:password@localhost:5432/url_shortener_test
+          REDIS_URL: redis://localhost:6379/1
+          RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
+        run: bin/rails spec
 
       - name: Keep screenshots from failed system tests
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: screenshots
-          path: ${{ github.workspace }}/tmp/screenshots
+          path: tmp/screenshots
           if-no-files-found: ignore
