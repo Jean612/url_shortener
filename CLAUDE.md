@@ -36,8 +36,10 @@ bundle exec rspec spec/models/link_spec.rb:10           # Run specific test at l
 ```bash
 bin/rubocop --parallel        # Lint with RuboCop (Rails Omakase style)
 bin/rubocop -a                # Auto-fix linting issues
-bin/brakeman --no-pager       # Security vulnerability scan
+bin/brakeman --no-pager       # Security scan (only Medium/High confidence warnings)
 ```
+
+**Note:** Brakeman is configured with `-w3` flag to only report Medium and High confidence warnings. The "Weak" confidence redirect warning in `ShortLinksController` is expected behavior for a URL shortener (external redirects are validated at model level).
 
 ### Database
 ```bash

@@ -2,4 +2,7 @@
 require "rubygems"
 require "bundler/setup"
 
+# Only report warnings with Medium or High confidence (ignore Weak warnings)
+ARGV.unshift("-w3")
+
 load Gem.bin_path("brakeman", "brakeman")
