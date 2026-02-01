@@ -6,7 +6,7 @@ module Mutations
     argument :original_url, String, required: true
 
     field :link, Types::LinkType, null: true
-    field :errors, [String], null: false
+    field :errors, [ String ], null: false
 
     # Resolves the mutation to create a link.
     #

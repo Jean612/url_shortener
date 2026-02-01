@@ -10,22 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_21_003645) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_21_003645) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_catalog.plpgsql"
+
   create_table "clicks", force: :cascade do |t|
-    t.integer "link_id", null: false
-    t.string "ip_address"
     t.string "country"
-    t.string "user_agent"
     t.datetime "created_at", null: false
+    t.string "ip_address"
+    t.integer "link_id", null: false
     t.datetime "updated_at", null: false
+    t.string "user_agent"
     t.index ["link_id"], name: "index_clicks_on_link_id"
   end
 
   create_table "links", force: :cascade do |t|
-    t.text "original_url"
-    t.string "slug"
     t.integer "clicks_count"
     t.datetime "created_at", null: false
+    t.text "original_url"
+    t.string "slug"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_links_on_slug", unique: true
   end

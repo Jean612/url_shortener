@@ -15,8 +15,8 @@ module Types
       context.schema.object_from_id(id, context)
     end
 
-    field :nodes, [Types::NodeType, null: true], null: true, description: "Fetches a list of objects given a list of IDs." do
-      argument :ids, [ID], required: true, description: "IDs of the objects."
+    field :nodes, [ Types::NodeType, null: true ], null: true, description: "Fetches a list of objects given a list of IDs." do
+      argument :ids, [ ID ], required: true, description: "IDs of the objects."
     end
 
     # Fetches a list of objects by their global IDs.
@@ -42,7 +42,7 @@ module Types
       Link.find_by(slug: slug)
     end
 
-    field :top_links, [Types::LinkType], null: false do
+    field :top_links, [ Types::LinkType ], null: false do
       argument :limit, Integer, required: false, default_value: 10
     end
 
