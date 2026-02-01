@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Deploying to VPS via SSH
         # Usamos una acción famosa llamada "appleboy/ssh-action"
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
