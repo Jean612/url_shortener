@@ -1,66 +1,73 @@
 # 🚀 High-Performance GraphQL URL Shortener
 
-Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 7** y **GraphQL**.
+A robust API designed to shorten URLs with high efficiency, built using **Ruby on Rails 7** and **GraphQL**.
 
-**Demo en vivo:** [https://url-shortener-u7yc.onrender.com/graphql](https://url-shortener-u7yc.onrender.com/graphql)
+**Live Demo:** [https://url-shortener-u7yc.onrender.com/graphql](https://url-shortener-u7yc.onrender.com/graphql)
 
-## ⚡ Características Técnicas
-- **API-First Design:** Construido enteramente sobre GraphQL.
-- **Algoritmo Base62:** Codificación eficiente para generar slugs cortos y únicos.
-- **PostgreSQL:** Almacenamiento relacional optimizado.
-- **Error Handling:** Gestión robusta de errores (URLs inválidas, no encontradas).
+## ⚡ Technical Features
 
-## 📋 Requisitos Previos
+- **API-First Design:** Built entirely on GraphQL.
+- **Base62 Algorithm:** Efficient encoding for generating short and unique slugs.
+- **PostgreSQL:** Optimized relational storage.
+- **Click Tracking:** Tracks clicks, capturing IP address, user agent, and country (via Geocoder).
+- **Error Handling:** Robust error management (invalid URLs, not found).
 
-*   Ruby (versión especificada en `.ruby-version`)
-*   Bundler
-*   PostgreSQL
+## 📋 Prerequisites
 
-## 🛠️ Configuración
+Ensure you have the following installed on your system:
 
-1.  **Clonar el repositorio:**
+*   **Ruby** (version specified in `.ruby-version`, e.g., 3.2.0)
+*   **Bundler** (`gem install bundler`)
+*   **PostgreSQL** (running locally or accessible via network)
+
+## 🛠️ Setup & Installation
+
+Follow these steps to set up the project locally:
+
+1.  **Clone the repository:**
 
     ```bash
     git clone https://github.com/yourusername/url-shortener.git
     cd url-shortener
     ```
 
-2.  **Instalar dependencias:**
+2.  **Install dependencies:**
 
     ```bash
     bundle install
     ```
 
-3.  **Configurar la base de datos:**
+3.  **Configure the Database:**
 
-    Asegúrate de que el servicio de PostgreSQL esté en ejecución.
+    Make sure your PostgreSQL service is running.
 
-    La aplicación utiliza `config/database.yml` para la configuración de la base de datos. Por defecto, busca un usuario llamado `url_shortener` sin contraseña en desarrollo. Puedes actualizar `config/database.yml` o usar variables de entorno para adaptarlo a tu configuración local.
+    The application uses `config/database.yml` for database configuration. By default, it expects a user named `url_shortener` with no password in the development environment. You can update `config/database.yml` or use environment variables to match your local setup.
 
-4.  **Preparar la base de datos:**
+4.  **Prepare the Database:**
 
-    Crear la base de datos y ejecutar migraciones:
+    Create the database and run migrations:
 
     ```bash
     rails db:setup
     ```
 
-5.  **Iniciar el servidor:**
+5.  **Start the Server:**
 
     ```bash
     rails server
     ```
 
-    La aplicación estará disponible en `http://localhost:3000` (o 3001 dependiendo de la configuración).
+    The application will be available at `http://localhost:3000`.
 
-## 🔌 Uso de la API
+## 🔌 API Usage
 
-La API es accesible en `/graphql` (o en el link del demo). Puedes interactuar con ella utilizando herramientas como GraphiQL, Postman o cURL.
+The API is accessible at `/graphql`. You can interact with it using tools like GraphiQL (enabled in development), Postman, or cURL.
 
-### 1. Crear un Link Corto (Mutation)
+### 1. Create a Short Link (Mutation)
 
-Para acortar una URL, utiliza la mutación `createLink`.
+To shorten a URL, use the `createLink` mutation.
 
+**Request:**
 ```graphql
 mutation {
   createLink(input: { originalUrl: "https://www.example.com" }) {
@@ -74,10 +81,27 @@ mutation {
 }
 ```
 
-### 2. Consultar un Link por Slug (Query)
+**Response:**
+```json
+{
+  "data": {
+    "createLink": {
+      "link": {
+        "originalUrl": "https://www.example.com",
+        "shortUrl": "http://localhost:3000/s/abc123",
+        "slug": "abc123"
+      },
+      "errors": []
+    }
+  }
+}
+```
 
-Para obtener los detalles de un link específico, incluyendo su URL original y estadísticas de clics, usa la query `link` proporcionando el `slug`.
+### 2. Query a Link by Slug
 
+To get details of a specific link, including its original URL and click statistics, use the `link` query with the `slug`.
+
+**Request:**
 ```graphql
 query {
   link(slug: "abc123") {
@@ -93,10 +117,11 @@ query {
 }
 ```
 
-### 3. Consultar Top Links (Query)
+### 3. Query Top Links
 
-Para obtener los links más visitados, utiliza la query `topLinks`. Puedes limitar la cantidad de resultados.
+To get the most visited links, use the `topLinks` query. You can limit the number of results.
 
+**Request:**
 ```graphql
 query {
   topLinks(limit: 5) {
@@ -107,30 +132,30 @@ query {
 }
 ```
 
-### Redirección
+### Redirection
 
-Para visitar un link acortado, simplemente navega a:
+To visit a shortened link, simply navigate to the path `/s/<slug>`.
 
-`https://url-shortener-u7yc.onrender.com/s/<slug>` (en producción)
-o
-`http://localhost:3001/s/<slug>` (en local)
+**Example:** `http://localhost:3000/s/abc123`
 
-Ejemplo: `/s/abc123`
+This will record a click (analytics) and redirect you to the original URL.
 
 ## 🧪 Testing
 
-Ejecuta la suite de pruebas con:
+The project uses RSpec for testing. Run the test suite with:
 
 ```bash
 bundle exec rspec
 ```
 
-## 📂 Estructura del Proyecto
+## 📂 Project Structure
 
-*   `app/models`: Modelos ActiveRecord (`Link`, `Click`).
-*   `app/controllers`: Controladores de la API (`ShortLinksController`, `GraphqlController`).
-*   `app/graphql`: Esquema GraphQL, tipos, mutaciones y resolvers.
+*   `app/models`: ActiveRecord Models (`Link`, `Click`).
+*   `app/controllers`: API Controllers (`ShortLinksController`, `GraphqlController`).
+*   `app/graphql`: GraphQL Schema, Types, Mutations, and Resolvers.
+*   `app/jobs`: Background jobs.
+*   `app/mailers`: Email mailers.
 
-## 📄 Licencia
+## 📄 License
 
-Este proyecto es open source y está disponible bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
+This project is open source and available under the [MIT License](https://opensource.org/licenses/MIT).

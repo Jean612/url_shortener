@@ -2,9 +2,15 @@
 
 module Types
   # The root type for all GraphQL mutations.
+  # This type exposes all available mutation operations in the API.
   class MutationType < Types::BaseObject
+    # @!attribute [r] create_link
+    #   @return [Mutations::CreateLink] Mutation to create a new short link
     field :create_link, mutation: Mutations::CreateLink
+
     # TODO: remove me
+    # @!attribute [r] test_field
+    #   @return [String] An example field
     field :test_field, String, null: false,
       description: "An example field added by the generator"
 

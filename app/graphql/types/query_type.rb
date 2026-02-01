@@ -2,7 +2,10 @@
 
 module Types
   # The root type for all GraphQL queries.
+  # Defines the entry points for fetching data from the API.
   class QueryType < Types::BaseObject
+    # @!attribute [r] node
+    #   @return [Types::NodeType, nil] Fetches an object given its ID
     field :node, Types::NodeType, null: true, description: "Fetches an object given its ID." do
       argument :id, ID, required: true, description: "ID of the object."
     end
@@ -15,6 +18,8 @@ module Types
       context.schema.object_from_id(id, context)
     end
 
+    # @!attribute [r] nodes
+    #   @return [Array<Types::NodeType, nil>, nil] Fetches a list of objects given a list of IDs
     field :nodes, [Types::NodeType, null: true], null: true, description: "Fetches a list of objects given a list of IDs." do
       argument :ids, [ID], required: true, description: "IDs of the objects."
     end
@@ -30,6 +35,8 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
+    # @!attribute [r] link
+    #   @return [Types::LinkType, nil] Fetches a link by its slug
     field :link, Types::LinkType, null: true do
       argument :slug, String, required: true
     end
@@ -42,6 +49,8 @@ module Types
       Link.find_by(slug: slug)
     end
 
+    # @!attribute [r] top_links
+    #   @return [Array<Types::LinkType>] Fetches the top links by click count
     field :top_links, [Types::LinkType], null: false do
       argument :limit, Integer, required: false, default_value: 10
     end

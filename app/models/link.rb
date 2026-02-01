@@ -13,6 +13,18 @@ class Link < ApplicationRecord
   #   @return [String] the unique identifier for the shortened link
   validates :slug, presence: true, uniqueness: true
 
+  # @!attribute clicks_count
+  #   @return [Integer] the number of times the link has been clicked
+  #   (This attribute is inferred from the database schema)
+
+  # @!attribute created_at
+  #   @return [Time] the timestamp when the link was created
+  #   (This attribute is inferred from the database schema)
+
+  # @!attribute updated_at
+  #   @return [Time] the timestamp when the link was last updated
+  #   (This attribute is inferred from the database schema)
+
   before_validation :generate_slug, on: :create
   before_validation :set_defaults, on: :create
 
@@ -29,7 +41,7 @@ class Link < ApplicationRecord
   private
 
   # Generates a unique 6-character alphanumeric slug.
-  # If a slug is not already provided, it generates one and ensures uniqueness.
+  # If a slug is not already provided, it generates one and ensures uniqueness by checking against existing records.
   #
   # @return [void]
   def generate_slug
@@ -41,7 +53,7 @@ class Link < ApplicationRecord
   end
 
   # Sets default values for new records.
-  # Initializes clicks_count to 0.
+  # Initializes clicks_count to 0 if it is not already set.
   #
   # @return [void]
   def set_defaults

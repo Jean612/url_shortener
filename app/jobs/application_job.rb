@@ -1,4 +1,6 @@
 # Base class for all background jobs in the application.
+# Inherits from ActiveJob::Base and provides common configuration for all jobs.
+# Jobs defined in this application should inherit from this class.
 class ApplicationJob < ActiveJob::Base
   # Automatically retry jobs that encountered a deadlock
   # retry_on ActiveRecord::Deadlocked

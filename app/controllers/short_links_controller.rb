@@ -2,9 +2,10 @@
 class ShortLinksController < ApplicationController
   # Redirects a short link slug to its original URL.
   # Records the click analytics (IP, user agent, country) before redirecting.
+  # If the slug is not found, it renders a 404 response.
   #
-  # @route GET /:slug
-  # @param slug [String] The unique identifier for the short link
+  # @route GET /s/:slug
+  # @param slug [String] The unique identifier for the short link, passed as a path parameter
   # @return [void] Redirects to the original URL or renders a 404 plain text response
   def show
     link = Link.find_by(slug: params[:slug])

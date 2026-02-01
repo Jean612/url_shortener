@@ -2,6 +2,7 @@
 
 module Types
   # Interface for objects that can be fetched by ID.
+  # Implements the Relay Node interface, allowing object identification and fetching.
   module NodeType
     include Types::BaseInterface
     # Add the `id` field
