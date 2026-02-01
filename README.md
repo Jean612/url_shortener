@@ -1,8 +1,8 @@
 # 🚀 High-Performance GraphQL URL Shortener
 
-Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 7** y **GraphQL**.
+Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 8.1** y **GraphQL**.
 
-**Demo en vivo:** [https://url-shortener-u7yc.onrender.com/graphql](https://url-shortener-u7yc.onrender.com/graphql)
+**Demo en vivo:** [https://api-shortener.jeanchavez.dev/graphql](https://api-shortener.jeanchavez.dev/graphql)
 
 ## ⚡ Características Técnicas
 - **API-First Design:** Construido enteramente sobre GraphQL.
@@ -111,11 +111,11 @@ query {
 
 Para visitar un link acortado, simplemente navega a:
 
-`https://url-shortener-u7yc.onrender.com/s/<slug>` (en producción)
+`https://api-shortener.jeanchavez.dev/<slug>` (en producción)
 o
-`http://localhost:3001/s/<slug>` (en local)
+`http://localhost:3000/<slug>` (en local)
 
-Ejemplo: `/s/abc123`
+Ejemplo: `https://api-shortener.jeanchavez.dev/abc123`
 
 ## 🧪 Testing
 
