@@ -13,6 +13,15 @@ class Link < ApplicationRecord
   #   @return [String] the unique identifier for the shortened link
   validates :slug, presence: true, uniqueness: true
 
+  # @!attribute clicks_count
+  #   @return [Integer] the total number of clicks this link has received
+
+  # @!attribute created_at
+  #   @return [DateTime] the timestamp when the link was created
+
+  # @!attribute updated_at
+  #   @return [DateTime] the timestamp when the link was last updated
+
   before_validation :generate_slug, on: :create
   before_validation :set_defaults, on: :create
 

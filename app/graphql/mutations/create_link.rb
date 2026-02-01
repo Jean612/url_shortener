@@ -3,10 +3,10 @@
 module Mutations
   # Mutation to create a new short link.
   class CreateLink < BaseMutation
-    argument :original_url, String, required: true
+    argument :original_url, String, required: true, description: "The original URL to be shortened"
 
-    field :link, Types::LinkType, null: true
-    field :errors, [ String ], null: false
+    field :link, Types::LinkType, null: true, description: "The created link object"
+    field :errors, [ String ], null: false, description: "A list of error messages if creation failed"
 
     # Resolves the mutation to create a link.
     #

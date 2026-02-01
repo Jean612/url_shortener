@@ -30,8 +30,8 @@ module Types
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
 
-    field :link, Types::LinkType, null: true do
-      argument :slug, String, required: true
+    field :link, Types::LinkType, null: true, description: "Fetches a specific link by its slug" do
+      argument :slug, String, required: true, description: "The unique slug of the link"
     end
 
     # Fetches a link by its slug.
@@ -42,8 +42,8 @@ module Types
       Link.find_by(slug: slug)
     end
 
-    field :top_links, [ Types::LinkType ], null: false do
-      argument :limit, Integer, required: false, default_value: 10
+    field :top_links, [ Types::LinkType ], null: false, description: "Fetches the most visited links" do
+      argument :limit, Integer, required: false, default_value: 10, description: "The maximum number of links to return"
     end
 
     # Fetches the top links by click count.

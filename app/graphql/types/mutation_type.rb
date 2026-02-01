@@ -3,7 +3,8 @@
 module Types
   # The root type for all GraphQL mutations.
   class MutationType < Types::BaseObject
-    field :create_link, mutation: Mutations::CreateLink
+    field :create_link, mutation: Mutations::CreateLink, description: "Creates a new shortened link"
+
     # TODO: remove me
     field :test_field, String, null: false,
       description: "An example field added by the generator"
