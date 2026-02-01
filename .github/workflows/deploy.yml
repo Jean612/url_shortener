@@ -1,0 +1,37 @@
+name: Deploy to Oracle Cloud
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying to VPS via SSH
+        # Usamos una acción famosa llamada "appleboy/ssh-action"
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # 1. Ir a la carpeta del proyecto
+            cd ~/apps/url_shortener
+            
+            # 2. Bajar los cambios nuevos de GitHub
+            # (Si te pide credenciales aquí, avísame, hay un truco extra)
+            git pull origin main
+            
+            # 3. Apagar contenedores viejos
+            docker compose down
+            
+            # 4. Construir y levantar los nuevos (El --build es clave)
+            docker compose up -d --build
+            
+            # 5. Correr migraciones por si la BD cambió
+            docker compose run --rm web bin/rails db:prepare
+            
+            # 6. Limpiar basura de Docker para no llenar el disco de Oracle
+            docker system prune -f
