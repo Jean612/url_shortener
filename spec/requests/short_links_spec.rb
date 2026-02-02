@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "ShortLinks", type: :request do
+  include ActiveJob::TestHelper
+
   describe "GET /:slug" do
     let!(:link) { create(:link, original_url: "https://example.com") }
 
@@ -12,22 +14,34 @@ RSpec.describe "ShortLinks", type: :request do
 
       it "increments the click count" do
         expect {
-          get "/#{link.slug}"
+          perform_enqueued_jobs do
+            get "/#{link.slug}"
+          end
         }.to change { link.reload.clicks_count }.by(1)
       end
 
       it "creates a click record" do
         expect {
-          get "/#{link.slug}"
+          perform_enqueued_jobs do
+            get "/#{link.slug}"
+          end
         }.to change(Click, :count).by(1)
       end
 
       it "records the ip address and user agent" do
-        get "/#{link.slug}", headers: { "User-Agent" => "TestAgent" }
+        perform_enqueued_jobs do
+          get "/#{link.slug}", headers: { "User-Agent" => "TestAgent" }
+        end
         click = Click.last
         expect(click.link).to eq(link)
         expect(click.user_agent).to eq("TestAgent")
         expect(click.ip_address).to be_present
+      end
+
+      it "enqueues a ClickRecordingJob" do
+        expect {
+           get "/#{link.slug}"
+        }.to have_enqueued_job(ClickRecordingJob)
       end
     end
 
