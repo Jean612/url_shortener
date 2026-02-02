@@ -3,6 +3,8 @@
 module Types
   # GraphQL type representing a Click.
   class ClickType < Types::BaseObject
+    implements Types::NodeType
+
     field :id, ID, null: false
     field :link_id, Integer, null: false
     field :ip_address, String, null: true

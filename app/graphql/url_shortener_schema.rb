@@ -30,9 +30,14 @@ class UrlShortenerSchema < GraphQL::Schema
   # @return [Class] The concrete GraphQL object type
   # @raise [GraphQL::RequiredImplementationMissingError] if not implemented
   def self.resolve_type(abstract_type, obj, ctx)
-    # TODO: Implement this method
-    # to return the correct GraphQL object type for `obj`
-    raise(GraphQL::RequiredImplementationMissingError)
+    case obj
+    when Link
+      Types::LinkType
+    when Click
+      Types::ClickType
+    else
+      raise(GraphQL::RequiredImplementationMissingError)
+    end
   end
 
   # Limit the size of incoming queries:
