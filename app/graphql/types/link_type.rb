@@ -3,6 +3,8 @@
 module Types
   # GraphQL type representing a Link.
   class LinkType < Types::BaseObject
+    implements Types::NodeType
+
     field :id, ID, null: false
     field :original_url, String, null: false
     field :slug, String, null: false
