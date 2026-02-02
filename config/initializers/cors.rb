@@ -7,7 +7,7 @@
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    origins "*" # Cuando tengas el frontend listo, cambia '*' por 'https://tu-frontend.vercel.app'
+    origins "https://shortener.jeanchavez.dev"
     resource "*",
       headers: :any,
       methods: [ :get, :post, :put, :patch, :delete, :options, :head ]
