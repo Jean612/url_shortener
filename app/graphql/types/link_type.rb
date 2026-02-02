@@ -11,5 +11,10 @@ module Types
     field :clicks, [ Types::ClickType ], null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+
+    # Optimizes fetching clicks using Dataloader to avoid N+1 queries.
+    def clicks
+      dataloader.with(Sources::ActiveRecordAssociation, :clicks).load(object)
+    end
   end
 end
