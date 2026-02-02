@@ -2,7 +2,7 @@
 
 Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 8.1** y **GraphQL**.
 
-**Demo en vivo:** [https://api-shortener.jeanchavez.dev/graphql](https://api-shortener.jeanchavez.dev/graphql)
+**Demo en vivo:** [https://s.jeanchavez.dev/graphql](https://s.jeanchavez.dev/graphql)
 
 ## ⚡ Características Técnicas
 - **API-First Design:** Construido enteramente sobre GraphQL.
@@ -111,11 +111,11 @@ query {
 
 Para visitar un link acortado, simplemente navega a:
 
-`https://api-shortener.jeanchavez.dev/<slug>` (en producción)
+`https://s.jeanchavez.dev/<slug>` (en producción)
 o
 `http://localhost:3000/<slug>` (en local)
 
-Ejemplo: `https://api-shortener.jeanchavez.dev/abc123`
+Ejemplo: `https://s.jeanchavez.dev/abc123`
 
 ## 🧪 Testing
 
