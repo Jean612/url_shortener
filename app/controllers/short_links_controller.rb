@@ -10,7 +10,7 @@ class ShortLinksController < ApplicationController
     link = Link.find_by(slug: params[:slug])
 
     if link
-      # Async tracking could be better for performance, but synchronous is fine for MVP
+      # Track click asynchronously
       record_click(link)
       redirect_to link.original_url, allow_other_host: true, status: :moved_permanently
     else
@@ -21,26 +21,15 @@ class ShortLinksController < ApplicationController
   private
 
   # Records a click for a given link.
-  # Attempts to determine the country from the IP address using Geocoder.
+  # Enqueues a background job to record the click and perform geocoding.
   #
   # @param link [Link] The link that was clicked
-  # @return [Click] The created Click record
+  # @return [void]
   def record_click(link)
-    # Simple IP to Country lookup
-    # In production, use a real database or service. Geocoder with default lookup might be slow or rate limited.
-    # For this MVP, we'll try Geocoder but fail gracefully.
-    country = begin
-      Geocoder.search(request.remote_ip).first&.country
-    rescue => e
-      Rails.logger.error "Geocoder error: #{e.message}"
-      nil
-    end
-
-    Click.create(
-      link: link,
+    ClickRecordingJob.perform_later(
+      link_id: link.id,
       ip_address: request.remote_ip,
-      user_agent: request.user_agent,
-      country: country
+      user_agent: request.user_agent
     )
   end
 end
