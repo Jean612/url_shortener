@@ -14,7 +14,9 @@ class ClickRecordingJob < ApplicationJob
     return unless link
 
     country = begin
-      Geocoder.search(ip_address).first&.country
+      Rails.cache.fetch("ip_country:#{ip_address}", expires_in: 24.hours) do
+        Geocoder.search(ip_address).first&.country
+      end
     rescue => e
       Rails.logger.error "Geocoder error: #{e.message}"
       nil
