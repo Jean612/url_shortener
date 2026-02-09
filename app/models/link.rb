@@ -3,7 +3,7 @@
 class Link < ApplicationRecord
   # @!attribute clicks
   #   @return [ActiveRecord::Relation<Click>] the collection of clicks associated with this link
-  has_many :clicks, dependent: :destroy
+  has_many :clicks, dependent: :delete_all
 
   # @!attribute original_url
   #   @return [String] the original long URL
