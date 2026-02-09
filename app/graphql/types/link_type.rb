@@ -10,13 +10,14 @@ module Types
     field :slug, String, null: false
     field :short_url, String, null: true
     field :clicks_count, Integer, null: false
-    field :clicks, [ Types::ClickType ], null: true
+    field :clicks, Types::ClickType.connection_type, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 
-    # Optimizes fetching clicks using Dataloader to avoid N+1 queries.
+    # Fetches the clicks associated with this link.
+    # Returns a paginated connection to avoid loading all clicks at once.
     def clicks
-      dataloader.with(Sources::ActiveRecordAssociation, :clicks).load(object)
+      object.clicks
     end
   end
 end
