@@ -15,10 +15,10 @@ class UrlShortenerSchema < GraphQL::Schema
   # @param context [Hash] The query context
   # @return [void]
   def self.type_error(err, context)
-    # if err.is_a?(GraphQL::InvalidNullError)
-    #   # report to your bug tracker here
-    #   return nil
-    # end
+    if err.is_a?(GraphQL::InvalidNullError)
+      Rails.logger.error("GraphQL Error: #{err.message}")
+      return nil
+    end
     super
   end
 
