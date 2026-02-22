@@ -24,7 +24,7 @@ module Types
     # @param ids [Array<ID>] The list of global IDs
     # @return [Array<Object, nil>] The list of objects found
     def nodes(ids:)
-      ids.map { |id| context.schema.object_from_id(id, context) }
+      dataloader.with(Sources::GlobalIdSource).load_all(ids)
     end
 
     # Add root-level fields here.
