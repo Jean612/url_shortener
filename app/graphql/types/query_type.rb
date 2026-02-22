@@ -49,9 +49,11 @@ module Types
     # Fetches the top links by click count.
     #
     # @param limit [Integer] The maximum number of links to return (default: 10)
-    # @return [ActiveRecord::Relation<Link>] The list of top links
+    # @return [Array<Link>] The list of top links
     def top_links(limit:)
-      Link.order(clicks_count: :desc).limit(limit)
+      Rails.cache.fetch("top_links:#{limit}", expires_in: 5.minutes) do
+        Link.order(clicks_count: :desc).limit(limit).to_a
+      end
     end
   end
 end
