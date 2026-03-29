@@ -1,65 +1,69 @@
-# 🚀 High-Performance GraphQL URL Shortener
+# High-Performance GraphQL URL Shortener
 
-Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 8.1** y **GraphQL**.
+Una API para acortar URLs construida con **Ruby on Rails 8.1** y **GraphQL**, desplegada en un VPS de Oracle Cloud.
 
-**Demo en vivo:** [https://s.jeanchavez.dev/graphql](https://s.jeanchavez.dev/graphql)
+**API:** [https://lynk.lat/graphql](https://lynk.lat/graphql)
+**Frontend:** [https://app.lynk.lat](https://app.lynk.lat)
 
-## ⚡ Características Técnicas
-- **API-First Design:** Construido enteramente sobre GraphQL.
-- **Algoritmo Base62:** Codificación eficiente para generar slugs cortos y únicos.
-- **PostgreSQL:** Almacenamiento relacional optimizado.
-- **Error Handling:** Gestión robusta de errores (URLs inválidas, no encontradas).
+## Características
 
-## 📋 Requisitos Previos
+- **GraphQL-first:** Todas las operaciones principales van por `/graphql`.
+- **Slug alfanumérico:** 6 caracteres aleatorios de `[A-Za-z0-9]` con detección de colisiones.
+- **Analytics de clicks:** Registra IP, user agent y país (via Geocoder) de cada visita.
+- **Cache con Redis:** Slugs e IPs geocodificadas se cachean para reducir consultas a la DB.
+- **Background jobs:** El registro de clicks se procesa de forma asíncrona con ActiveJob.
+- **Error monitoring:** Integrado con Rollbar para capturar y reportar errores en producción.
+- **CI/CD automático:** GitHub Actions corre los tests y despliega a Oracle VPS al mergear a `main`.
 
-*   Ruby (versión especificada en `.ruby-version`)
-*   Bundler
-*   PostgreSQL
+## Stack
 
-## 🛠️ Configuración
+| Tecnología | Uso |
+|---|---|
+| Ruby on Rails 8.1 | Framework principal |
+| PostgreSQL | Base de datos |
+| Redis | Cache y queue de jobs |
+| GraphQL Ruby | API |
+| Rollbar | Error monitoring |
+| Docker + Docker Compose | Deployment |
 
-1.  **Clonar el repositorio:**
+## Configuración local
 
-    ```bash
-    git clone https://github.com/yourusername/url-shortener.git
-    cd url-shortener
-    ```
+### Con Docker (recomendado)
 
-2.  **Instalar dependencias:**
+```bash
+git clone https://github.com/Jean612/url_shortener.git
+cd url_shortener
+cp .env.example .env  # edita con tus valores
+docker-compose up
+```
 
-    ```bash
-    bundle install
-    ```
+### Sin Docker
 
-3.  **Configurar la base de datos:**
+**Requisitos:** Ruby (ver `.ruby-version`), PostgreSQL, Redis
 
-    Asegúrate de que el servicio de PostgreSQL esté en ejecución.
+```bash
+git clone https://github.com/Jean612/url_shortener.git
+cd url_shortener
+bundle install
+rails db:setup
+rails server
+```
 
-    La aplicación utiliza `config/database.yml` para la configuración de la base de datos. Por defecto, busca un usuario llamado `url_shortener` sin contraseña en desarrollo. Puedes actualizar `config/database.yml` o usar variables de entorno para adaptarlo a tu configuración local.
+### Variables de entorno
 
-4.  **Preparar la base de datos:**
+Crea un archivo `.env` en la raíz del proyecto:
 
-    Crear la base de datos y ejecutar migraciones:
+```env
+ROLLBAR_ACCESS_TOKEN=your_token_here
+```
 
-    ```bash
-    rails db:setup
-    ```
+En producción, el `docker-compose.yml` inyecta las variables desde el `.env` del servidor.
 
-5.  **Iniciar el servidor:**
+## Uso de la API
 
-    ```bash
-    rails server
-    ```
+La API está disponible en `https://lynk.lat/graphql`. En desarrollo puedes usar GraphiQL en `http://localhost:3000/graphiql`.
 
-    La aplicación estará disponible en `http://localhost:3000` (o 3001 dependiendo de la configuración).
-
-## 🔌 Uso de la API
-
-La API es accesible en `/graphql` (o en el link del demo). Puedes interactuar con ella utilizando herramientas como GraphiQL, Postman o cURL.
-
-### 1. Crear un Link Corto (Mutation)
-
-Para acortar una URL, utiliza la mutación `createLink`.
+### Crear un link corto
 
 ```graphql
 mutation {
@@ -74,9 +78,7 @@ mutation {
 }
 ```
 
-### 2. Consultar un Link por Slug (Query)
-
-Para obtener los detalles de un link específico, incluyendo su URL original y estadísticas de clics, usa la query `link` proporcionando el `slug`.
+### Consultar un link por slug
 
 ```graphql
 query {
@@ -93,9 +95,7 @@ query {
 }
 ```
 
-### 3. Consultar Top Links (Query)
-
-Para obtener los links más visitados, utiliza la query `topLinks`. Puedes limitar la cantidad de resultados.
+### Top links más visitados
 
 ```graphql
 query {
@@ -109,28 +109,47 @@ query {
 
 ### Redirección
 
-Para visitar un link acortado, simplemente navega a:
+Visitar `https://lynk.lat/<slug>` redirige al URL original con un `301`.
 
-`https://s.jeanchavez.dev/<slug>` (en producción)
-o
-`http://localhost:3000/<slug>` (en local)
-
-Ejemplo: `https://s.jeanchavez.dev/abc123`
-
-## 🧪 Testing
-
-Ejecuta la suite de pruebas con:
+## Testing
 
 ```bash
 bundle exec rspec
 ```
 
-## 📂 Estructura del Proyecto
+## Linting y seguridad
 
-*   `app/models`: Modelos ActiveRecord (`Link`, `Click`).
-*   `app/controllers`: Controladores de la API (`ShortLinksController`, `GraphqlController`).
-*   `app/graphql`: Esquema GraphQL, tipos, mutaciones y resolvers.
+```bash
+bin/rubocop --parallel   # linting
+bin/brakeman --no-pager  # seguridad
+```
 
-## 📄 Licencia
+## CI/CD
 
-Este proyecto es open source y está disponible bajo la [Licencia MIT](https://opensource.org/licenses/MIT).
+- **CI:** GitHub Actions corre los tests en cada PR contra PostgreSQL y Redis reales.
+- **Deploy:** Al mergear a `main`, se despliega automáticamente al VPS via SSH (`docker-compose up -d --build`).
+
+## Estructura del proyecto
+
+```
+app/
+├── controllers/
+│   ├── graphql_controller.rb      # Endpoint GraphQL
+│   └── short_links_controller.rb  # Redirección /:slug
+├── graphql/
+│   ├── mutations/                 # createLink
+│   ├── types/                     # LinkType, ClickType
+│   └── url_shortener_schema.rb
+├── jobs/
+│   └── click_recording_job.rb     # Geocodifica y guarda el click
+└── models/
+    ├── click.rb
+    └── link.rb
+config/
+└── initializers/
+    └── rollbar.rb
+```
+
+## Licencia
+
+MIT
