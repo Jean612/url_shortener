@@ -2,7 +2,8 @@
 
 Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ruby on Rails 8.1** y **GraphQL**.
 
-**Demo en vivo:** [https://s.jeanchavez.dev/graphql](https://s.jeanchavez.dev/graphql)
+**API:** [https://lynk.lat/graphql](https://lynk.lat/graphql)
+**Frontend:** [https://app.lynk.lat](https://app.lynk.lat)
 
 ## ⚡ Características Técnicas
 - **API-First Design:** Construido enteramente sobre GraphQL.
@@ -55,7 +56,7 @@ Una API robusta diseñada para acortar URLs con alta eficiencia, utilizando **Ru
 
 ## 🔌 Uso de la API
 
-La API es accesible en `/graphql` (o en el link del demo). Puedes interactuar con ella utilizando herramientas como GraphiQL, Postman o cURL.
+La API es accesible en `https://lynk.lat/graphql`. Puedes interactuar con ella utilizando herramientas como GraphiQL, Postman o cURL, o directamente desde el frontend en [app.lynk.lat](https://app.lynk.lat).
 
 ### 1. Crear un Link Corto (Mutation)
 
@@ -111,11 +112,11 @@ query {
 
 Para visitar un link acortado, simplemente navega a:
 
-`https://s.jeanchavez.dev/<slug>` (en producción)
+`https://lynk.lat/<slug>` (en producción)
 o
 `http://localhost:3000/<slug>` (en local)
 
-Ejemplo: `https://s.jeanchavez.dev/abc123`
+Ejemplo: `https://lynk.lat/abc123`
 
 ## 🧪 Testing
 
