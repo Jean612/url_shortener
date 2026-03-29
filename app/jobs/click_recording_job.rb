@@ -20,9 +20,11 @@ class ClickRecordingJob < ApplicationJob
       end
     rescue Timeout::Error => e
       Rails.logger.error "Geocoder timeout for IP #{ip_address}: #{e.message}"
+      Rollbar.warning(e, ip_address: ip_address)
       nil
     rescue => e
       Rails.logger.error "Geocoder error: #{e.message}"
+      Rollbar.error(e, ip_address: ip_address)
       nil
     end
 
@@ -35,6 +37,7 @@ class ClickRecordingJob < ApplicationJob
       )
     rescue ActiveRecord::InvalidForeignKey => e
       Rails.logger.warn "Failed to record click for link #{link_id}: #{e.message}"
+      Rollbar.warning(e, link_id: link_id)
     end
   end
 end
