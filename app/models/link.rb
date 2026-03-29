@@ -11,7 +11,7 @@ class Link < ApplicationRecord
 
   # @!attribute slug
   #   @return [String] the unique identifier for the shortened link
-  validates :slug, presence: true, uniqueness: true
+  validates :slug, presence: true
 
   before_validation :generate_slug, on: :create
   before_validation :set_defaults, on: :create
@@ -28,16 +28,13 @@ class Link < ApplicationRecord
 
   private
 
-  # Generates a unique 6-character alphanumeric slug.
-  # If a slug is not already provided, it generates one and ensures uniqueness.
+  # Generates a 6-character alphanumeric slug.
+  # If a slug is not already provided, it generates one.
+  # Uniqueness is now primarily enforced by the database unique index.
   #
   # @return [void]
   def generate_slug
-    self.slug ||= SecureRandom.alphanumeric(6)
-    loop do
-      break unless Link.exists?(slug: slug)
-      self.slug = SecureRandom.alphanumeric(6)
-    end
+    self.slug = SecureRandom.alphanumeric(6) if slug.blank?
   end
 
   # Sets default values for new records.

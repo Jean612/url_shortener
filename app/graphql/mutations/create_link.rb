@@ -14,10 +14,22 @@ module Mutations
     # @return [Hash] A hash containing the created link and any errors
     def resolve(original_url:)
       link = Link.new(original_url: original_url)
-      if link.save
-        { link: link, errors: [] }
-      else
-        { link: nil, errors: link.errors.full_messages }
+
+      retries = 0
+      begin
+        if link.save
+          { link: link, errors: [] }
+        else
+          { link: nil, errors: link.errors.full_messages }
+        end
+      rescue ActiveRecord::RecordNotUnique
+        if retries < 3
+          retries += 1
+          link.slug = nil # clear slug to trigger generation of a new one
+          retry
+        else
+          { link: nil, errors: ["Failed to generate a unique slug after multiple attempts"] }
+        end
       end
     end
   end
