@@ -25,6 +25,7 @@ class GraphqlController < ApplicationController
     result = UrlShortenerSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
     render json: result
   rescue StandardError => e
+    Rollbar.error(e, query: params[:query], operation_name: params[:operationName])
     raise e unless Rails.env.development?
     handle_error_in_development(e)
   end
