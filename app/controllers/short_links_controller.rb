@@ -7,7 +7,9 @@ class ShortLinksController < ApplicationController
   # @param slug [String] The unique identifier for the short link
   # @return [void] Redirects to the original URL or renders a 404 plain text response
   def show
-    link = Link.find_by(slug: params[:slug])
+    link = Rails.cache.fetch("link:#{params[:slug]}", expires_in: 1.hour) do
+      Link.find_by(slug: params[:slug])
+    end
 
     if link
       # Track click asynchronously
