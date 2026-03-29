@@ -17,11 +17,11 @@ RSpec.describe Link, type: :model do
       expect(link).not_to be_valid
     end
 
-    it 'validates uniqueness of slug' do
+    it 'validates uniqueness of slug at the database level' do
       create(:link, slug: 'unique')
       link = create(:link)
       link.slug = 'unique'
-      expect(link).not_to be_valid
+      expect { link.save(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
     end
   end
 
