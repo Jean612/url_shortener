@@ -28,7 +28,7 @@ module Mutations
           link.slug = nil # clear slug to trigger generation of a new one
           retry
         else
-          { link: nil, errors: ["Failed to generate a unique slug after multiple attempts"] }
+          { link: nil, errors: [ "Failed to generate a unique slug after multiple attempts" ] }
         end
       end
     end
