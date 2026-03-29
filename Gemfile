@@ -30,6 +30,7 @@ gem "bootsnap", require: false
 gem "rack-cors"
 
 group :development, :test do
+  gem "dotenv-rails"
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 
@@ -49,3 +50,4 @@ gem "graphql", "~> 2.5"
 gem "graphiql-rails", "~> 1.10"
 gem "geocoder", "~> 1.8"
 gem "browser", "~> 6.2"
+gem "rollbar"

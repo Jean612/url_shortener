@@ -27,6 +27,7 @@ services:
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
       RENDER_EXTERNAL_HOSTNAME: "lynk.lat"
       RAILS_SERVE_STATIC_FILES: "true"
+      ROLLBAR_ACCESS_TOKEN: ${ROLLBAR_ACCESS_TOKEN}
     depends_on:
       - db
       - redis
