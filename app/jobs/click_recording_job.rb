@@ -1,3 +1,5 @@
+require "timeout"
+
 # Background job to record analytics for a link click.
 # Performs Geocoding to determine country from IP address.
 class ClickRecordingJob < ApplicationJob
@@ -15,8 +17,13 @@ class ClickRecordingJob < ApplicationJob
 
     country = begin
       Rails.cache.fetch("ip_country:#{ip_address}", expires_in: 24.hours) do
-        Geocoder.search(ip_address).first&.country
+        Timeout.timeout(5) do
+          Geocoder.search(ip_address).first&.country
+        end
       end
+    rescue Timeout::Error => e
+      Rails.logger.error "Geocoder timeout for IP #{ip_address}: #{e.message}"
+      nil
     rescue => e
       Rails.logger.error "Geocoder error: #{e.message}"
       nil
