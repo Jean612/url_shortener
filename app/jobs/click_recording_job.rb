@@ -12,9 +12,6 @@ class ClickRecordingJob < ApplicationJob
   # @param user_agent [String] The User Agent string
   # @return [void]
   def perform(link_id:, ip_address:, user_agent:)
-    link = Link.find_by(id: link_id)
-    return unless link
-
     country = begin
       Rails.cache.fetch("ip_country:#{ip_address}", expires_in: 24.hours) do
         Timeout.timeout(5) do
@@ -29,11 +26,15 @@ class ClickRecordingJob < ApplicationJob
       nil
     end
 
-    Click.create(
-      link: link,
-      ip_address: ip_address,
-      user_agent: user_agent,
-      country: country
-    )
+    begin
+      Click.create(
+        link_id: link_id,
+        ip_address: ip_address,
+        user_agent: user_agent,
+        country: country
+      )
+    rescue ActiveRecord::InvalidForeignKey => e
+      Rails.logger.warn "Failed to record click for link #{link_id}: #{e.message}"
+    end
   end
 end
