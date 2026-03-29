@@ -1,4 +1,4 @@
-require 'timeout'
+require "timeout"
 
 # Background job to record analytics for a link click.
 # Performs Geocoding to determine country from IP address.
