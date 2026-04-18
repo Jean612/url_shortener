@@ -39,7 +39,9 @@ module Types
     # @param slug [String] The slug of the link
     # @return [Link, nil] The link found, or nil
     def link(slug:)
-      Link.find_by(slug: slug)
+      Rails.cache.fetch("link:#{slug}", expires_in: 1.hour) do
+        Link.find_by(slug: slug)
+      end
     end
 
     field :top_links, [ Types::LinkType ], null: false do
