@@ -15,9 +15,12 @@ module Types
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
 
     # Fetches the clicks associated with this link.
-    # Returns a paginated connection to avoid loading all clicks at once.
+    # Uses GraphQL Dataloader to batch load clicks and prevent N+1 queries.
+    # Returns a paginated connection.
+    #
+    # @return [Enumerable<Click>] the collection of clicks
     def clicks
-      object.clicks
+      dataloader.with(Sources::ActiveRecordAssociation, :clicks).load(object)
     end
   end
 end
