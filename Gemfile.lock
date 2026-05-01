@@ -113,7 +113,7 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.5)
       railties
-    graphql (2.5.22)
+    graphql (2.6.1)
       base64
       fiber-storage
       logger
@@ -327,7 +327,7 @@ DEPENDENCIES
   factory_bot_rails
   geocoder (~> 1.8)
   graphiql-rails (~> 1.10)
-  graphql (~> 2.5)
+  graphql (~> 2.6)
   pg (~> 1.1)
   puma (>= 5.0)
   rack-cors
