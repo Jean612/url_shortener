@@ -46,7 +46,7 @@ end
 
 
 
-gem "graphql", "~> 2.5"
+gem "graphql", "~> 2.6"
 gem "graphiql-rails", "~> 1.10"
 gem "geocoder", "~> 1.8"
 gem "browser", "~> 6.2"
